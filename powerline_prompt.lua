@@ -1,3 +1,5 @@
+local path = dofile(clink.get_env('CMDER_ROOT').."\\config\\path.lua")
+
 -- Configurations
 --- plc_prompt_type is whether the displayed prompt is the full path or only the folder name
  -- Use:
@@ -54,14 +56,24 @@ local function init()
     -- If a Git repo is active, it will only show the folder name
     -- This helps users avoid having a super long prompt
         local git_dir = get_git_dir()
-        if plc_prompt_useHomeSymbol and string.find(cwd, clink.get_env("HOME")) and git_dir ==nil then 
+        if plc_prompt_useHomeSymbol and path.commonpath(cwd, clink.get_env("HOME")) == clink.get_env("HOME") and git_dir ==nil then 
             -- in both smart and full if we are in home, behave like a proper command line
-            cwd = string.gsub(cwd, clink.get_env("HOME"), plc_prompt_homeSymbol)
+            local _, stripped_cwd = path.parse(cwd)
+            local _, stripped_home = path.parse(clink.get_env("HOME"))
+            local rel = path.rel(stripped_cwd, stripped_home)
+            if rel == "." then
+                cwd = plc_prompt_homeSymbol
+            else              
+                cwd = plc_prompt_homeSymbol..path.default_sep()..path.rel(stripped_cwd, stripped_home)
+            end
         else 
             -- either not in home or home not supported then check the smart path
             if plc_prompt_type == promptTypeSmart then
                 if git_dir then
-                    cwd = get_folder_name(cwd)
+                    local _, stripped_cwd = path.parse(cwd)
+                    -- we go up twice, 1st removes the /.git, 2nd preserves the repo folder name
+                    local _, stripped_git_path = path.parse(path.dir(path.dir(git_dir)))
+                    cwd = path.rel(stripped_cwd, stripped_git_path)
                     if plc_prompt_gitSymbol then
                         cwd = plc_prompt_gitSymbol.." "..cwd
                     end
