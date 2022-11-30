@@ -1,4 +1,4 @@
-
+--This was sourced from https://github.com/luapower/path/blob/master/path.lua
 --Path manipulation for Windows and UNIX paths.
 --Written by Cosmin Apreutesei. Public Domain.
 
