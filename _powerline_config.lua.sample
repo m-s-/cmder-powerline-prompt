@@ -49,6 +49,13 @@ plc_git_conflictSymbol = "!"
 -- OPTIONAL. Git symbol used in the folder segment when 'smart' prompt is used and the user navigates to a folder with Git repo
 --plc_prompt_gitSymbol = "GIT"
 
+-- OPTIONAL. Git symbol used in the git status segment. Used to indicate number of dirty files
+plc_git_fileCountSymbol="±"
+
+-- OPTIONAL. Git symbol used in the git ahead\behind segment. Used to indicate inbound and outgoing commits
+plc_git_behindSymbol=""
+plc_git_aheadSymbol=""
+
 -- REQUIRED. Hg branch symbol. Used to indicate the name of a branch 
 plc_hg_branchSymbol = ""
 
